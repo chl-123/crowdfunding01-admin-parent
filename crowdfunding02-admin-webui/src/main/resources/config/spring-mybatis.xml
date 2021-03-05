@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+                         http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <context:component-scan base-package="com.chl.crowd">
+        <!--<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>-->
+
+    </context:component-scan>
+    <context:property-placeholder location="classpath:config/application.properties"></context:property-placeholder>
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+
+    </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
+        <property name="mapperLocations" value="classpath:mapper/AdminMapper.xml"></property>
+        <!--配置分页插件-->
+        <property name="plugins">
+            <array>
+                <!--配置PageHelper插件-->
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+
+                        <props>
+                            <!--配置数据库方言告诉PageHelper当前使用的数据库-->
+                            <prop key="dialect">mysql</prop>
+                            <!--配置页码的合理化修正，在1到总页数之间修正页码-->
+                            <prop key="reasonable">true</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.chl.crowd.mapper"></property>
+    </bean>
+
+
+    <!--SqlSessionTemplate:就是我们使用的sqlSession-->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <!--只能使用构造器进行注入，因为没有set方法-->
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+</beans>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!--扫描组件，将加上@Controller的注释类作为SpringMVC的控制层-->
+    <context:component-scan base-package="com.chl.crowd.mvc">
+        <!--<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>-->
+        <!--<context:include-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/-->
+    </context:component-scan>
+    <!--配置视图解析器
+    作用将prefix+视图名称+suffix 确定最终要跳转的页面
+    -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!--
+    配置Tomcat中默认的Servlet，DefaultServlet
+    注意：当DefaultServlet所设置的<url-pattern>的值和开发人员设置Servlet的<url-pattern>相同吗，以开发人员的为先
+    作用:当DefaultServlet所设置的<url-pattern>的值和开发人员设置Servlet的<url-pattern>相同吗，
+    因此通过DisPatcherServlet请求处理，找该请求是否有相对应的处理器，有则处理，无则交给DefaultServlet
+
+    -->
+    <mvc:default-servlet-handler/>
+    <mvc:annotation-driven></mvc:annotation-driven>
+    <!--用来配置文件上传功能需要的解析器将File转化为MultipartFile
+    注意id只能为multipartResolver
+    -->
+    <!--    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+            &lt;!&ndash;设置文件解析的编码注意一定要和页面编码保持一致&ndash;&gt;
+            <property name="defaultEncoding" value="UTF-8"></property>
+            <property name="maxUploadSize" value="888888"></property>
+        </bean>-->
+    <!--配置基于XML的异常映射-->
+    <!--    <bean id="simpleMappingExceptionResolver"
+              class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+            &lt;!&ndash;配置异常类型和具体视图页面的对应关系&ndash;&gt;
+            <property name="exceptionMappings">
+                <props>
+                    <prop key="java.lang.Exception">System-error</prop>
+                </props>
+            </property>
+        </bean>-->
+    <mvc:view-controller path="/admin/to/login/page.html" view-name="admin-login"></mvc:view-controller>
+    <mvc:view-controller path="/admin/to/main/page.html" view-name="admin-main"></mvc:view-controller>
+    <mvc:view-controller path="/admin/to/add/page.html" view-name="admin-add"></mvc:view-controller>
+    <!--配置自定义拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/admin/to/login/page.html"/>
+            <mvc:exclude-mapping path="/admin/do/login.html"/>
+            <mvc:exclude-mapping path="/admin/do/logout.html"/>
+            <bean class="com.chl.crowd.mvc.interceptor.LoginInterceptor"></bean>
+
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>
