@@ -22,7 +22,13 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"></property>
         <property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
-        <property name="mapperLocations" value="classpath:mapper/AdminMapper.xml"></property>
+        <property name="mapperLocations">
+            <array>
+                <value > classpath:mapper/AdminMapper.xml</value>
+                <value > classpath:mapper/RoleMapper.xml</value>
+            </array>
+        </property>
+
         <!--配置分页插件-->
         <property name="plugins">
             <array>

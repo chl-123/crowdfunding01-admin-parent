@@ -105,7 +105,7 @@
                                                     class=" glyphicon glyphicon-check"></i></button>
                                                 <%--<button type="button" class="btn btn-primary btn-xs"><i
                                                         class=" glyphicon glyphicon-pencil"></i></button>--%>
-                                            <a href="http://localhost:8080/crowdfunding/admin/to/edit/page.html? adminId=${admin.id }&pageNum=${requestScope.pageInfo.pageNum }&keyword=${param.keyword }"
+                                            <a href="http://localhost:8080/crowdfunding/admin/to/edit/page.html?adminId=${admin.id }&pageNum=${requestScope.pageInfo.pageNum }&keyword=${param.keyword }"
                                                class="btn btn-primary btn-xs"><i
                                                     class=" glyphicon glyphicon-pencil"></i></a>
                                                 <%--<button type="button" class="btn btn-danger btn-xs"><i
