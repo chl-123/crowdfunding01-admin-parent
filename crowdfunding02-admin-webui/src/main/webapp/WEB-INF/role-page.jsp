@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <%@include file="/WEB-INF/include-head.jsp" %>
+<link rel="stylesheet" href="css/pagination.css"/>
 <script type="text/javascript" src="crowd/role-page.js"></script>
 <script type="text/javascript" src="jquery/jquery.pagination.js"></script>
 <script type="text/javascript">
@@ -56,15 +57,7 @@
                             <tfoot>
                                 <tr>
                                     <td colspan="6" align="center">
-                                        <ul class="pagination">
-                                            <li class="disabled"><a href="#">上一页</a></li>
-                                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                                            <li><a href="#">2</a></li>
-                                            <li><a href="#">3</a></li>
-                                            <li><a href="#">4</a></li>
-                                            <li><a href="#">5</a></li>
-                                            <li><a href="#">下一页</a></li>
-                                        </ul>
+                                        <div id="Pagination" class="pagination"><!-- 这里显示分页 --></div>
                                     </td>
                                 </tr>
                             </tfoot>

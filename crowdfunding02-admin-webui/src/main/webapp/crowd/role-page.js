@@ -69,12 +69,36 @@ function fillTableBody(pageInfo) {
         var buttonTd = "<td>"+checkBtn+" "+pencilBtn+" "+removeBtn+"</td>";
         var tr = "<tr>"+numberTd+checkboxTd+roleNameTd+buttonTd+"</tr>";
         $("#rolePageBody").append(tr);
+        //生成分页导航条
+        generateNavigator(pageInfo);
     }
 
 }
-function generateNavigator() {
+//生成分页页码导航条
+function generateNavigator(pageInfo) {
+    //获取总记录数
+    var totalRecord=pageInfo.total;
 
+    //声明相关属性
+    var properties={
+        "num_edge_entries": 1,
+        "num_display_entries": 2,
+        "callback": paginationCallBack,
+        "items_per_page": pageInfo.pageSize,
+        "current_page": pageInfo.pageNum - 1,
+        "prev_text": "上一页",
+        "next_text": "下一页"
+    }
+    //调用pagination函数
+    $("#Pagination").pagination(totalRecord,properties);
 }
+//翻页时回调函数
 function paginationCallBack(pageIndex,jQuery) {
+    //修改window对象的pageNum属性
+    window.pageNum=pageIndex+1;
+    //调用分页函数
+    generatePage();
+    //取消超链接的默认行为
+    return false;
 
 }
