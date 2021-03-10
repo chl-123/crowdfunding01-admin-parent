@@ -20,4 +20,9 @@ public class RoleServiceImpl implements RoleService{
 
         return new PageInfo<>(roleList);
     }
+
+    @Override
+    public void saveRole(Role role) {
+        roleMapper.insert(role);
+    }
 }

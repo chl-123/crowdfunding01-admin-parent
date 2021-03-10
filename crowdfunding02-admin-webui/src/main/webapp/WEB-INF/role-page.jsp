@@ -4,8 +4,10 @@
 <html lang="zh-CN">
 <%@include file="/WEB-INF/include-head.jsp" %>
 <link rel="stylesheet" href="css/pagination.css"/>
+
 <script type="text/javascript" src="crowd/role-page.js"></script>
 <script type="text/javascript" src="jquery/jquery.pagination.js"></script>
+<script type="text/javascript" src="layer/layer.js"></script>
 <script type="text/javascript">
     $(function () {
         //为分页准备初始化数据
@@ -13,7 +15,58 @@
         window.pageSize=5;
         window.keyword="";
         generatePage();
+        $("#searchBtn").click(
+            function () {
+                window.keyword=$("#keywordInput").val();
+                generatePage();
+        });
+        //点击新增按钮打开模态框
+        $("#addBtn").click(
+            function () {
+                $("#addModal").modal("show");
+            }
+        );
+        $("#saveRoleBtn").click(function () {
+            //获取用户在文本框中输入的信息
+            // #addModal 表示找到整个模态框
+            // 空格表示在后代元素中继续查找
+            // [name=roleName]表示匹配 name 属性等于 roleName 的元素
+            var roleName=$.trim($("#addModal [name=roleName]").val());
+
+            //发送Ajax请求
+            $.ajax({
+                "url":"http://localhost:8080/crowdfunding/admin/to/role/save.json",
+                "type":"post",
+                "data":{
+                    "name":roleName
+                },
+                "dataType":"json",
+                "success":function (response) {
+                    var result=response.result;
+
+                    if(result=="SUCCESS"){
+                        window.pageNum=66666;
+                        //重新加载分页
+                        generatePage();
+                        layer.msg("操作成功");
+                    }
+                    if(result=="FAILED"){
+                        layer.msg("操作失败"+response.message);
+                    }
+                },
+                "error":function (response) {
+                    layer.msg(response.status+" "+response.statusText);
+                }
+            })
+            //隐藏模态框
+            $("#addModal").modal("hide");
+            //清理模态框
+            $("#addModal [name=roleName]").val("");
+
+        });
+
     });
+
 </script>
 <body>
 <%@ include file="/WEB-INF/include-nav.jsp" %>
@@ -30,14 +83,14 @@
                         <div class="form-group has-feedback">
                             <div class="input-group">
                                 <div class="input-group-addon">查询条件</div>
-                                <input class="form-control has-success" type="text" placeholder="请输入查询条件">
+                                <input id="keywordInput" class="form-control has-success" type="text" placeholder="请输入查询条件">
                             </div>
                         </div>
-                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                        <button  id="searchBtn" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
                     </form>
                     <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;">
                         <i class=" glyphicon glyphicon-remove"></i> 删除</button>
-                    <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='form.html'">
+                    <button id="addBtn" type="button" class="btn btn-primary" style="float:right;" >
                         <i class="glyphicon glyphicon-plus"></i> 新增</button>
                     <br>
                     <hr style="clear:both;">
@@ -68,5 +121,8 @@
         </div>
     </div>
 </div>
+<%@include file="/WEB-INF/modal-role-add.jsp" %>
+<%@include file="/WEB-INF/modal-role-edit.jsp" %>
+<%@include file="/WEB-INF/modal-role-confirm.jsp" %>
 </body>
 </html>

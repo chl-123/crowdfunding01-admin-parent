@@ -27,4 +27,12 @@ public class RoleController {
         return ResultEntity.successWithData(pageInfo);
     }
 
+    @RequestMapping("/admin/to/role/save.json")
+    @ResponseBody
+    public  ResultEntity<String> savePageInfo(Role role){
+        roleServices.saveRole(role);
+        return ResultEntity.successWithoutData();
+    }
+
+
 }
