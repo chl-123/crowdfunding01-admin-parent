@@ -1,4 +1,21 @@
 
+function showConfirmModal2(roleArray) {
+    //显示模态框
+    $("#confirmModal").modal("show");
+    //清除数据
+    $("#roleNameDiv").empty();
+    // 在全局变量范围创建数组用来存放角色id
+    window.roleIdArray = [];
+    //遍历数据
+    for (var i=0;i<roleArray.length;i++) {
+        var role=roleArray[i];
+        var roleName=role.roleName;
+        $("#roleNameDiv").append(roleName+"<br/>");
+        var roleId=role.roleId;
+        window.roleIdArray.push(roleId);
+    }
+
+}
 // 执行分页，生成页面效果，任何时候调用这个函数都会重新加载页面
 function generatePage() {
 
@@ -7,6 +24,7 @@ function generatePage() {
 
     // 2.填充表格
     fillTableBody(pageInfo);
+
 
 }
 
