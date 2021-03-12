@@ -4,7 +4,6 @@
 <html lang="zh-CN">
 <%@include file="/WEB-INF/include-head.jsp" %>
 <link rel="stylesheet" href="css/pagination.css"/>
-
 <script type="text/javascript" src="crowd/role-page.js"></script>
 <script type="text/javascript" src="jquery/jquery.pagination.js"></script>
 <script type="text/javascript" src="layer/layer.js"></script>
@@ -145,8 +144,23 @@
         });
 
         $("#removeArrayBtn").click(function () {
-
-           showConfirmModal();
+            var roleArray=[];
+            $(".itemBox:checked").each(function () {
+                //使用this遍历当前文本框
+                var roleId=this.id;
+                var roleName=$(this).parent().next().text();
+                roleArray.push(
+                    {
+                        "roleId":roleId,
+                        "roleName":roleName
+                    }
+                );
+            });
+            if(roleArray.length==0){
+                layer.msg("请至少选择一个执行删除");
+                return ;
+            }
+            showConfirmModal2(roleArray);
         });
 
         $("#removeRoleBtn").click(function () {
@@ -194,8 +208,6 @@
             //获取全部.itemBox的数量
             var totalBoxCount=$(".itemBox").length;
             $("#summaryBox").prop("checked",checkedBoxCount==totalBoxCount);
-
-
         });
     });
 
