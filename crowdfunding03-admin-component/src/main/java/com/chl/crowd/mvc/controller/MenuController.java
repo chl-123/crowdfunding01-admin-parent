@@ -14,7 +14,7 @@ public class MenuController {
     MenuService menuService;
 
     @ResponseBody
-    @RequestMapping("admin/menu/get/tree.json")
+    @RequestMapping("/admin/menu/get/tree.json")
     public ResultEntity<Menu> getWholeTreeNew(){
         Menu root=menuService.getAll();
         return ResultEntity.successWithData(root);

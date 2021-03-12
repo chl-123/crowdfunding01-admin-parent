@@ -5,18 +5,30 @@
 <%@include file="/WEB-INF/include-head.jsp"%>
 <link rel="stylesheet" href="ztree/zTreeStyle.css"/>
 <script type="text/javascript" src="ztree/jquery.ztree.all-3.5.min.js"></script>
-<script type="text/javascript" src="crowd/my-menu.js"></script>
+<script type="text/javascript" src="crowd/role-menu.js"></script>
 <script type="text/javascript">
-	var setting={};
-	var zNodes=[
-		{
-			name: "ddd",  isParent:true,
-		},
-		{
-			name: "aa",  isParent:true,
-		}
-	];
-	$.fn.zTree.init($("#treeDemo"),setting,zNodes);
+	$(function () {
+		$.ajax({
+			"url":"http://localhost:8080/crowdfunding/admin/menu/get/tree.json",
+			"type":"post",
+			"dataType":"json",
+			"success":function (response) {
+				var result=response.result;
+				if(result=="SUCCESS"){
+					var setting={
+						"view":{
+							"addDiyDom":myAddDiyDom
+						}
+					};
+					var zNodes=response.data;
+					$.fn.zTree.init($("#treeDemo"),setting,zNodes);
+				}
+				if(result=="FAILED"){}
+				layer.msg(response.message);
+			}
+		});
+	});
+
 
 
 </script>
