@@ -125,6 +125,12 @@
       </if>
     </trim>
   </insert>
+  <select id="selectAssignedRole" resultMap="BaseResultMap">
+    select id,name from role where id in (select role_id from inner_admin_role where admin_id=#{adminId})
+  </select>
+  <select id="selectUnAssignedRole" resultMap="BaseResultMap">
+    select id,name from role where id not in (select role_id from inner_admin_role where admin_id=#{adminId})
+  </select>
   <select id="countByExample" parameterType="com.chl.crowd.entity.RoleExample" resultType="java.lang.Integer" >
     select count(*) from role
     <if test="_parameter != null" >

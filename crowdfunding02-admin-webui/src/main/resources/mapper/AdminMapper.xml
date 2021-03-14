@@ -103,6 +103,9 @@
         from crowd.admin
         where id = #{id,jdbcType=INTEGER}
     </select>
+    <delete id="deleteOLdRelationship">
+        delete from inner_admin_role where admin_id=#{adminId}
+    </delete>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from crowd.admin
@@ -114,6 +117,11 @@
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
+    <insert id="insertNewRelationship">
+        insert into inner_admin_role(admin_id,role_id) values
+        <foreach collection="roleIdList" item="roleId"
+                 separator=",">(#{adminId},#{roleId})</foreach>
+    </insert>
     <insert id="insert" parameterType="com.chl.crowd.entity.Admin">
         insert into crowd.admin (id, login_acct, user_pswd,
                                  user_name, email, create_time)
