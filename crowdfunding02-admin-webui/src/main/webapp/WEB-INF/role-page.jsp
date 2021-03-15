@@ -4,17 +4,18 @@
 <html lang="zh-CN">
 <%@include file="/WEB-INF/include-head.jsp" %>
 <link rel="stylesheet" href="css/pagination.css"/>
-<script type="text/javascript" src="crowd/role-page.js"></script>
+<link rel="stylesheet" href="ztree/zTreeStyle.css"/>
+<script type="text/javascript" src="ztree/jquery.ztree.all-3.5.min.js"></script>
 <script type="text/javascript" src="jquery/jquery.pagination.js"></script>
 <script type="text/javascript" src="layer/layer.js"></script>
+
+<script type="text/javascript" src="crowd/role-page.js"></script>
 <script type="text/javascript">
     $(function () {
         //为分页准备初始化数据
         window.pageNum=1;
         window.pageSize=5;
         window.keyword="";
-
-
         generatePage();
         $("#searchBtn").click(
             function () {
@@ -33,7 +34,6 @@
             // 空格表示在后代元素中继续查找
             // [name=roleName]表示匹配 name 属性等于 roleName 的元素
             var roleName=$.trim($("#addModal [name=roleName]").val());
-
             //发送Ajax请求
             $.ajax({
                 "url":"http://localhost:8080/crowdfunding/admin/to/role/save.json",
@@ -44,7 +44,6 @@
                 "dataType":"json",
                 "success":function (response) {
                     var result=response.result;
-
                     if(result=="SUCCESS"){
                         window.pageNum=66666;
                         //重新加载分页
@@ -63,7 +62,6 @@
             $("#addModal").modal("hide");
             //清理模态框
             $("#addModal [name=roleName]").val("");
-
         });
         // 使用 jQuery 对象的 on()函数可以解决上面问题
         // ①首先找到所有“动态生成” 的元素所附着的“静态” 元素
@@ -73,25 +71,19 @@
         $("#rolePageBody").on("click",".pencilBtn",function(){
             // 打开模态框
             $("#editModal").modal("show");
-
             // 获取表格中当前行中的角色名称
             var roleName = $(this).parent().prev().text();
-
             // 获取当前角色的id
             // 依据是：var pencilBtn = "<button id='"+roleId+"' ……这段代码中我们把roleId设置到id属性了
             // 为了让执行更新的按钮能够获取到roleId的值，把它放在全局变量上
             window.roleId = this.id;
-
             // 使用roleName的值设置模态框中的文本框
             $("#editModal [name=roleName]").val(roleName);
         });
-
         // 7.给更新模态框中的更新按钮绑定单击响应函数
         $("#updateRoleBtn").click(function(){
-
             // ①从文本框中获取新的角色名称
             var roleName = $("#editModal [name=roleName]").val();
-
             // ②发送Ajax请求执行更新
             $.ajax({
                 "url":"http://localhost:8080/crowdfunding/admin/to/role/update.json",
@@ -102,34 +94,24 @@
                 },
                 "dataType":"json",
                 "success":function(response){
-
                     var result = response.result;
-
                     if(result == "SUCCESS") {
                         layer.msg("操作成功！");
-
                         // 重新加载分页数据
                         generatePage();
                     }
-
                     if(result == "FAILED") {
                         layer.msg("操作失败！"+response.message);
                     }
-
                 },
                 "error":function(response){
                     layer.msg(response.status+" "+response.statusText);
                 }
             });
-
             // ③关闭模态框
             $("#editModal").modal("hide");
         });
-
-
-
         $("#rolePageBody").on("click",".removeBtn",function () {
-
             //从当前按钮出发获取角色名称
             var roleName=$(this).parent().prev().text();
             var roleArray=[
@@ -138,11 +120,8 @@
                     roleName:roleName
                 }
             ];
-           //showConfirmModal(roleArray);
             showConfirmModal2(roleArray);
-
         });
-
         $("#removeArrayBtn").click(function () {
             var roleArray=[];
             $(".itemBox:checked").each(function () {
@@ -162,9 +141,7 @@
             }
             showConfirmModal2(roleArray);
         });
-
         $("#removeRoleBtn").click(function () {
-
             var requestBody=JSON.stringify(window.roleIdArray);
             $.ajax({
                 "url":"http://localhost:8080/crowdfunding/admin/to/role/delete.json",
@@ -173,20 +150,15 @@
                 "contentType":"application/json;charset=UTF-8",
                 "dataType":"json",
                 "success":function(response){
-
                     var result = response.result;
-
                     if(result == "SUCCESS") {
                         layer.msg("操作成功！");
-
                         // 重新加载分页数据
                         generatePage();
                     }
-
                     if(result == "FAILED") {
                         layer.msg("操作失败！"+response.message);
                     }
-
                 },
                 "error":function(response){
                     layer.msg(response.status+" "+response.statusText);
@@ -196,7 +168,6 @@
             $("#confirmModal").modal("hide");
             //清理模态框
             //$("#confirmModal [name=roleName]").val("");
-
         });
         $("#summaryBox").click(function () {
            var currentStatus =this.checked;
@@ -208,6 +179,12 @@
             //获取全部.itemBox的数量
             var totalBoxCount=$(".itemBox").length;
             $("#summaryBox").prop("checked",checkedBoxCount==totalBoxCount);
+        });
+        $("#rolePageBody").on("click",".checkBtn",function () {
+            // 把当前角色id存入全局变量
+           window.roleId=this.id;
+           $("#assignModal").modal("show");
+           fillAuthTree1();
         });
     });
 
@@ -267,5 +244,6 @@
 <%@include file="/WEB-INF/modal-role-add.jsp" %>
 <%@include file="/WEB-INF/modal-role-edit.jsp" %>
 <%@include file="/WEB-INF/modal-role-confirm.jsp" %>
+<%@include file="/WEB-INF/modal-role-assign-auth.jsp"%>
 </body>
 </html>

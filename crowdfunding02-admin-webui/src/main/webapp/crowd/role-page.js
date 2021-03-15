@@ -1,4 +1,76 @@
 
+function fillAuthTree1() {
+    //发送ajax请求查询Auth数据
+    var ajaxReturn=$.ajax({
+        "url":"http://localhost:8080/crowdfunding/admin/get/assgin/all/auth.json",
+        "type":"post",
+        "dataType":"json",
+        "async":false
+    });
+    if(ajaxReturn.status!=200){
+        layer.msg("请求处理出错！响应状态码是："+ajaxReturn.status+" "+ajaxReturn.statusText);
+        return ;
+    }
+    //从响应结果中获取Auth的JSON数据
+    var authList=ajaxReturn.responseJSON.data;
+    //layer.msg(authList);
+
+    //准备对zTree进行设置的JSON对象
+    var setting = {
+        "data": {
+            "simpleData": {
+                // 开启简单 JSON 功能
+                "enable": true,
+                // 使用 categoryId 属性关联父节点， 不用默认的 pId 了
+                "pIdKey": "categoryId"
+            },
+            "key": {
+                // 使用 title 属性显示节点名称， 不用默认的 name 作为属性名了
+                "name": "title"
+            }
+        },
+        "check": {
+            "enable": true
+        }
+    };
+    $.fn.zTree.init($("#authTreeDemo"), setting, authList);
+    //获取zTreeObj对象
+    var zTreeObj=$.fn.zTree.getZTreeObj("authTreeDemo");
+    // 调用 zTreeObj 对象的方法， 把节点展开
+    zTreeObj.expandAll(true);
+    //查询已分配的Auth的Id组成的数组
+
+    ajaxReturn=$.ajax({
+        "url":"http://localhost:8080/crowdfunding/admin/get/assgin/authId/by/roleId.json",
+        "type":"post",
+        "data":{
+            "roleId":window.roleId
+        },
+        "dataType":"json",
+        "async":false
+    });
+    if(ajaxReturn.status != 200) {
+        layer.msg(" 请 求 处 理 出 错 ！ 响 应 状 态 码 是 ： "+ajaxReturn.status+" 说 明 是 ："+ajaxReturn.statusText);
+        return ;
+    }
+    //从响应结果中获取authidArray
+    var authIdArray=ajaxReturn.responseJSON.data;
+    // 6.根据 authIdArray 把树形结构中对应的节点勾选上
+    // ①遍历 authIdArray
+
+    for (var i = 0; i <authIdArray.length ; i++) {
+        var authId=authIdArray[i];
+        // ②根据 id 查询树形结构中对应的节点
+        var treeNode=zTreeObj.getNodeByParam("id",authId);
+        // ③将 treeNode 设置为被勾选
+        // checked 设置为 true 表示节点勾选
+        var checked=true;
+        // checkTypeFlag 设置为 false， 表示不“联动”， 不联动是为了避免把不该勾选的勾选上
+        var checkTypeFlag=false;
+        zTreeObj.checkNode(treeNode,checked,checkTypeFlag);
+    }
+
+}
 function showConfirmModal2(roleArray) {
     //显示模态框
     $("#confirmModal").modal("show");
@@ -103,7 +175,7 @@ function fillTableBody(pageInfo) {
         var checkboxTd = "<td><input id='"+roleId+"' class='itemBox' type='checkbox'></td>";
         var roleNameTd = "<td>"+roleName+"</td>";
 
-        var checkBtn = "<button type='button' class='btn btn-success btn-xs'><i class=' glyphicon glyphicon-check'></i></button>";
+        var checkBtn = "<button id='"+roleId+"'type='button' class='btn btn-success btn-xs checkBtn'><i class=' glyphicon glyphicon-check'></i></button>";
 
         // 通过button标签的id属性（别的属性其实也可以）把roleId值传递到button按钮的单击响应函数中，在单击响应函数中使用this.id
         var pencilBtn = "<button id='"+roleId+"' type='button' class='btn btn-primary btn-xs pencilBtn'><i class=' glyphicon glyphicon-pencil'></i></button>";
