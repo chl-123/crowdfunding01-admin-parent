@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring-*.xml"})
+@ContextConfiguration(locations = {"classpath:config/*.xml"})
 public class CrowdTest {
   @Autowired AdminService adminService;
 
@@ -30,7 +30,7 @@ public class CrowdTest {
 
   @Test
   public void test1() {
-    ApplicationContext ac = new ClassPathXmlApplicationContext("config/spring-mybatis.xml");
+    ApplicationContext ac = new ClassPathXmlApplicationContext("config/*.xml");
     AdminMapper userMapper = (AdminMapper) ac.getBean("adminMapper");
 
     System.out.println(userMapper.selectByPrimaryKey(1).toString());

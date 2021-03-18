@@ -20,7 +20,7 @@
     </modules>
 
     <properties>
-        <spring.security.version>5.4.2</spring.security.version>
+        <spring.security.version>5.4.1</spring.security.version>
         <spring.version>5.3.1</spring.version>
         <slf4j.version>1.7.7</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
@@ -68,11 +68,11 @@
                 <version>${spring.version}</version>
             </dependency>
             <!--spring包-->
-            <dependency>
+            <!--<dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
-            </dependency>
+            </dependency>-->
 
             <!--用于SpringMVC-->
             <dependency>
@@ -244,6 +244,19 @@
                 <artifactId>spring-security-taglibs</artifactId>
                 <version>${spring.security.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-cas</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+
+
+
             <!--CGLIB介绍CGLIB(Code Generation Library)是一个开源、高性能、高质量的Code生成类库(代码生成包)-->
             <dependency>
                 <groupId>cglib</groupId>

@@ -10,6 +10,7 @@
         <!--<context:include-filter type="annotation"
                                 expression="org.springframework.web.bind.annotation.ControllerAdvice"/-->
     </context:component-scan>
+    <mvc:annotation-driven></mvc:annotation-driven>
     <!--配置视图解析器
     作用将prefix+视图名称+suffix 确定最终要跳转的页面
     -->
@@ -26,7 +27,7 @@
 
     -->
     <mvc:default-servlet-handler/>
-    <mvc:annotation-driven></mvc:annotation-driven>
+
     <!--用来配置文件上传功能需要的解析器将File转化为MultipartFile
     注意id只能为multipartResolver
     -->
@@ -50,7 +51,8 @@
     <mvc:view-controller path="/admin/to/add/page.html" view-name="admin-add"></mvc:view-controller>
     <mvc:view-controller path="/admin/to/role/page.html" view-name="role-page"></mvc:view-controller>
     <mvc:view-controller path="/admin/to/menu/page.html" view-name="menu-page"></mvc:view-controller>
-    <!--配置自定义拦截器-->
+    <!--使用SpringSecurity后自定义拦截器不使用使用-->
+   <!-- &lt;!&ndash;配置自定义拦截器&ndash;&gt;
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
@@ -60,6 +62,6 @@
             <bean class="com.chl.crowd.mvc.interceptor.LoginInterceptor"></bean>
 
         </mvc:interceptor>
-    </mvc:interceptors>
+    </mvc:interceptors>-->
 
 </beans>

@@ -11,6 +11,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,8 @@ import java.util.Objects;
 @Service
 public class AdminServiceImpl implements AdminService {
   @Autowired private AdminMapper adminMapper;
-
+  @Autowired
+  private BCryptPasswordEncoder passwordEncoder;
   @Override
   public Admin GetAdmin(Integer id) {
     return adminMapper.selectByPrimaryKey(id);
@@ -49,7 +51,9 @@ public class AdminServiceImpl implements AdminService {
     }
     // 取出密文并且判断
     String userPswdDB = admin.getUserPswd();
-    String userPswdForm = CrowdUtil.md5(userPswd);
+    //String userPswdForm = CrowdUtil.md5(userPswd);
+    String userPswdForm=passwordEncoder.encode(userPswd);
+    System.out.println(passwordEncoder.encode("123456789"));
     if (!Objects.equals(userPswdDB, userPswdForm)) {
       throw new LoginFailedException(CrowdConstant.MESSAGE_LOGIN_PassWordFAILED);
     }
@@ -81,7 +85,9 @@ public class AdminServiceImpl implements AdminService {
     admin.setCreateTime(createTime);
     // 对提交的密码加密
     String source = admin.getUserPswd();
-    String encoded = CrowdUtil.md5(source);
+    //String encoded = CrowdUtil.md5(source);
+    String encoded=passwordEncoder.encode(source);
+    System.out.println(passwordEncoder.encode("123456789"));
     admin.setUserPswd(encoded);
     try {
       adminMapper.insert(admin);
@@ -113,4 +119,17 @@ public class AdminServiceImpl implements AdminService {
       adminMapper.insertNewRelationship(adminId,roleIdList);
     }
   }
+/*
+* 该方法是在做SpringSecurity时加上的方法
+* */
+  @Override
+  public Admin getAdminByLoginAcct(String userName) {
+    AdminExample example=new AdminExample();
+    AdminExample.Criteria criteria=example.createCriteria();
+    criteria.andLoginAcctEqualTo(userName);
+    List<Admin> list=adminMapper.selectByExample(example);
+    return list.get(0);
+  }
+
+
 }

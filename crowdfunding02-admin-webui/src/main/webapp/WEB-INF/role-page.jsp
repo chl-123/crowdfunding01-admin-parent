@@ -186,6 +186,55 @@
            $("#assignModal").modal("show");
            fillAuthTree1();
         });
+
+        //给分配权限模态框中的“分配”按钮绑定单级响应函数
+
+        $("#assignBtn").click(function () {
+            // ①收集树形结构的各个节点中被勾选的节点
+            // [1]声明一个专门的数组存放 id
+            var authIdArray=[];
+            //[2]获得zTreeObj对象
+
+            var zTreeObj=$.fn.zTree.getZTreeObj("authTreeDemo");
+            //[3]获取全部被勾选的节点
+            var checkdeNodes=zTreeObj.getCheckedNodes();
+
+            //[4]遍历checkedNodes
+            for (var i = 0; i <checkdeNodes.length ; i++) {
+                var checkedNode=checkdeNodes[i];
+                var authId=checkedNode.id;
+                authIdArray.push(authId);
+            }
+            //发送请求执行分配
+            var requestBody={
+                "authIdArray":authIdArray,
+                "roleId":[window.roleId]
+            };
+            requestBody = JSON.stringify(requestBody);
+            $.ajax({
+                "url":"http://localhost:8080/crowdfunding/admin/do/role/assign/auth.json",
+                "type":"post",
+                "data":requestBody,
+                "contentType":"application/json;charset=UTF-8",
+                "dataType":"json",
+                "success":function (response) {
+                    var result=response.result;
+                    if(result=="SUCCESS"){
+                        layer.msg("操作成功");
+                    }
+                    if(result=="FAILED"){
+                        layer.msg("操作失败"+response.message);
+                    }
+                },
+                "error":function (response) {
+                    layer.msg(response.status+" "+response.statusText);
+                }
+
+            });
+
+            $("#assignModal").modal("hide");
+
+        });
     });
 
 </script>

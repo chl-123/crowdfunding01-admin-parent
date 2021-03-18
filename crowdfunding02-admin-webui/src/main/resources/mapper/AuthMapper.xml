@@ -65,6 +65,14 @@
       </foreach>
     </where>
   </sql>
+  <select id="selectAssignedAuthNameByAdminId" resultType="string">
+  SELECT DISTINCT auth.name
+  FROM auth
+  LEFT JOIN inner_role_auth ON auth.id=inner_role_auth.auth_id
+  LEFT JOIN inner_admin_role ON inner_admin_role.role_id=inner_role_auth.role_id
+  WHERE inner_admin_role.admin_id=#{adminId} and auth.name != "" and auth.name is
+  not null
+</select>
   <select id="selectAssignedAuthIdByRoleId" resultType="int">
     select auth_id from inner_role_auth where role_id=#{roleId}
   </select>
@@ -91,6 +99,9 @@
     from auth
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <delete id="deleteOldRelationship">
+    delete from inner_role_auth where role_id=#{roleId}
+  </delete>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from auth
     where id = #{id,jdbcType=INTEGER}
@@ -101,6 +112,10 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+  <insert id="insertNewRelationship">
+    insert into inner_role_auth(auth_id,role_id) values
+    <foreach collection="authIdList" item="authId" separator=",">(#{authId},#{roleId})</foreach>
+  </insert>
   <insert id="insert" parameterType="com.chl.crowd.entity.Auth" >
     insert into auth (id, name, title, 
       category_id)
