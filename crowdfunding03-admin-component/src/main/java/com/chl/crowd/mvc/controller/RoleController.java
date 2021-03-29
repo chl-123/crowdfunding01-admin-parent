@@ -5,6 +5,7 @@ import com.chl.crowd.service.RoleService;
 import com.chl.crowd.util.ResultEntity;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ public class RoleController {
     @Autowired
     private RoleService roleServices;
 
-
+    @PreAuthorize("hasRole('部长')")//要求： 访问 Role 的分页功能时具备“部长” 角色
     @RequestMapping("/admin/to/role/info.json")
     @ResponseBody
     public ResultEntity<PageInfo<Role>> getPageInfo(

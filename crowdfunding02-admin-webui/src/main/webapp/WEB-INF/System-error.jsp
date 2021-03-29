@@ -40,7 +40,8 @@
     <h2 class="form-signin-heading" style="text-align: center">
         <i class="glyphicon glyphicon-log-in"></i> 系统消息
     </h2>
-    <h3 style="text-align: center">${requestScope.exception.mesmsage}</h3>
+    <h3 style="text-align: center">${SPRING_SECURITY_LAST_EXCEPTION.message}</h3>
+    <%--${requestScope.exception.mesmsage}--%>
     <button style="width: 150px;margin: 50px auto 0px auto" class="btn btn-lg btn-success">返回</button>
 </div>
 

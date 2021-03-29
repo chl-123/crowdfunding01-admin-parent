@@ -1,22 +1,30 @@
 package com.chl.crowd.mvc.config;
 
+import com.chl.crowd.constant.CrowdConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.security.web.access.AccessDeniedHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 //表示当前类是一个配置类
 @Configuration
 //启用web环境下的权限控制功能
 @EnableWebSecurity
-/*@EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled=true,jsr250Enabled=true)*/
-@Component
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@Component
 public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
@@ -60,8 +68,18 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll() // 针对静态资源进行设置， 无条件访问
                 .antMatchers("/ztree/**") // 针对静态资源进行设置， 无条件访问
                 .permitAll()
+                .antMatchers("/admin/get/page.html")
+                .hasRole("经理")
                 .anyRequest()
                 .authenticated()
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(new AccessDeniedHandler() {
+                    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                        request.setAttribute("exception", new Exception(CrowdConstant.MESSAGE_ACCESS_DENIED));
+                        request.getRequestDispatcher("/WEB-INF/System-error.jsp").forward(request, response);
+                    }
+                })
                 .and()
                 .csrf()                               //防止跨站请求登录功能
                 .disable()                            //关闭
@@ -76,6 +94,7 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/security/do/logout.html")
                 .logoutSuccessUrl("/admin/to/login/page.html")
                 ;
+
     }
 
 }

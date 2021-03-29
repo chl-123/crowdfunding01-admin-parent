@@ -56,6 +56,19 @@ public class CrowdExceptionResolver {
     String viewName = "admin-login";
     return commonResolve(exception, request, response, viewName);
   }
+  //用于SpringSecurity拦截后权限无法访问异常
+  @ExceptionHandler(value = Exception.class)
+  public ModelAndView resolveException(
+          // 实际捕获到的异常类型
+          Exception exception,
+          // 当前请求对象
+          HttpServletRequest request,
+          // 当前响应对象
+          HttpServletResponse response)
+          throws Exception {
+    String viewName = "admin-login";
+    return commonResolve(exception, request, response, viewName);
+  }
 
   public ModelAndView commonResolve(
 
